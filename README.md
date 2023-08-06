@@ -5,6 +5,7 @@
 - Ubuntu 20.04
 - Apache Nifi 1.22.0 ou +
 - Java OpenJDK 1.8.0_382
+- OpenSSL 1.1.1f ou +
 - Nano 4.8 ou +
 - Wget 1.20.3 ou +
 - Zip/Unzip 3.0 ou +
@@ -96,7 +97,7 @@ env | grep -Ei JAVA_HOME
 
 ### Criando um certificado autoassinado para acesso HTTPs
 
-- Crie um diretório para armazenar o certificado em ***/opt/nifi/certs***
+- Crie o diretório ***certs*** para armazenar o certificado em ***/opt/nifi***
 
 ```bash
 sudo mkdir -p /opt/nifi/certs
@@ -127,7 +128,7 @@ DNS.1 = localhost
 DNS.2 = 127.0.0.1
 ```
 
-- Crie o script ***create-cert.sh*** que vai gerar o certificado e senha para as configurações HTTPs
+- Crie o script ***create-cert.sh*** que vai gerar o certificado e senha para as configurações HTTPs no diretório ***certs***
 
 ```text
 #!/bin/bash
@@ -182,7 +183,7 @@ nano /opt/nifi/conf/bootstrap.conf
 
 - Edite os seguintes parâmetros:
 
-```bash
+```text
 # JVM memory settings
 # Xms2g memória inicial da JVM e Xmx2g memória máxima da JVM ambas com 2 GB
 java.arg.2=-Xms2g
@@ -207,8 +208,7 @@ Com as informações do certificado, keystore, truststore e senha criados no dir
 
 Atualize os seguintes parâmetros com os valores:
 
-```
-
+```text
 nifi.remote.input.host=
 nifi.remote.input.secure=true
 nifi.remote.input.socket.port=
@@ -290,6 +290,7 @@ PASSWD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | head -c 32)
 # Definindo o usuário e senha (O usuário que vai ser definido aqui vai ser o da sessão.)
 ./bin/nifi.sh set-single-user-credentials $USER $PASSWD
 
+# Salvando usuário e senha do Nifi
 echo "Usuário: $USER\nSenha: $PASSWD" > credenciais-nifi.txt
 echo "Usuário e senha Apache Nifi criados com Sucesso!!!"
 ```
